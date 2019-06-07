@@ -1,0 +1,19 @@
+{
+  "name": "aispdemo",
+  "version": "1.0.0",
+  "description": "AISP demo project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "open",
+    "banking",
+    "aisp"
+  ],
+  "author": "Fedor Tyurin",
+  "license": "ISC",
+  "dependencies": {
+    "enablebanking": "file:enablebanking.tgz"
+  }
+}
