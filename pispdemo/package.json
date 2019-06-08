@@ -1,0 +1,19 @@
+{
+  "name": "pispdemo",
+  "version": "1.0.0",
+  "description": "PISP demo project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "open",
+    "banking",
+    "pisp"
+  ],
+  "author": "Fedor Tyurin",
+  "license": "ISC",
+  "dependencies": {
+    "enablebanking": "file:enablebanking.tgz"
+  }
+}
