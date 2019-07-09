@@ -18,12 +18,8 @@ async function readLine() {
 };
 
 /**
- * Helper function for waiting a given number of seconds
+ * Bank connector specific settings
  */
-async function sleep(s) {
-  return new Promise(res => setTimeout(res, s * 1000));
-};
-
 const spankkiSettings = [
   true, // sandbox
   "!!! CLIENT ID TO BE INSERTED HERE !!!", // clientId
