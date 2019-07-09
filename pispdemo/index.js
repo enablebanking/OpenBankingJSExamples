@@ -24,19 +24,22 @@ async function sleep(s) {
   return new Promise(res => setTimeout(res, s * 1000));
 };
 
-const nordeaSettings = [
+const spankkiSettings = [
   true, // sandbox
   "!!! CLIENT ID TO BE INSERTED HERE !!!", // clientId
-  "!!! CLIENT SECRET TO BE INSERTED HERE !!!", // clientSecret
-  "cert.cer", // certPath
-  "key.pem", // keyPath
-  "1111", // keyPassword
-  "FI", // country
+  "!!! X API KEY TO BE INSERTED HERE !!!", // xApiKey
+  "wac.crt", // certPath (path to QWAC certificate)
+  "wac.key", // keyPath (path to QWAC private key)
+  "seal.key", // signKeyPath (path to Qseal private key)
+  "!!! QSEAL KID TO BE INSERTED HERE !!!", // signPubKeySerial (Qseal kid)
+  "https://enablebanking.com/", // paymentAuthRedirectUri
+  null, // paymentAuthState
   null, // accessToken
-  1000, // sessionDuration
-  null // language
+  null, // refreshToken
+  null // consentId
 ];
-const apiClient = new enablebanking.ApiClient('Nordea', nordeaSettings);
+
+const apiClient = new enablebanking.ApiClient('SPankki', spankkiSettings);
 const authApi = new enablebanking.AuthApi(apiClient);
 const aispApi = new enablebanking.AISPApi(apiClient);
 const pispApi = new enablebanking.PISPApi(apiClient);
@@ -45,14 +48,13 @@ async function main() {
   const auth = await authApi.getAuth(
     "code",
     "https://enablebanking.com/",
-    ["aisp", "pisp"],
+    ["aisp"],
     { state: "test" }
   );
   console.log("Authentication URL:", auth.url);
-
   console.log("Please enter URL where you've been redirected to after authentication:");
   const redirect = await readLine();
-  const redirectURL = url.parse(redirect, true);
+  const redirectURL = url.parse(redirect.replace("#", "?") /* because code in hash */, true);
   const token = await authApi.makeToken(
     "authorization_code",
     redirectURL.query.code,
@@ -88,10 +90,18 @@ async function main() {
   console.log(
     "Payment request authentication approach:",
     halPRCreation.appliedAuthenticationApproach);
-  console.log("Waiting 10 seconds for payment approval...");
-  await sleep(10); // Nordea sandbox should automatically approve payment requests in 10 sec
+  console.log("Payment authorization URL:", halPRCreation._links.consentApproval.href);
+  console.log("Please enter URL where you've been redirected to after authorization:");
+  const paymentRedirect = await readLine();
+  const paymentRedirectURL = url.parse(
+    paymentRedirect.replace("#", "?") /* because code in hash */, true);
   const halPR = await pispApi.makePaymentRequestConfirmation(
-    halPRCreation.paymentRequestResourceId);
+    halPRCreation.paymentRequestResourceId,
+    {
+      confirmation: {
+        psuAuthenticationFactor: paymentRedirectURL.query.code
+      }
+    });
   console.log("Payment request data:", halPR);
 };
 
