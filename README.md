@@ -21,3 +21,9 @@ the demo you need to use own credentials, which can be obtained after signing up
 The code uses `SPankki` connector and gets access to [S-Pankki](https://www.s-pankki.fi/)'s open banking sandbox. In order to
 run the demo you need to use own credentials (including test eIDAS certificates), which can be obtained after signing up to
 [Crosskey Open Banking Market](https://crosskey.io/) (Crosskey is the vendor of open banking APIs for S-Pankki).
+
+----
+
+**Please note** that enablebanking is not open-source software and is **not available in general 
+[npm repository](https://www.npmjs.com/)**, so please contact us at [hello@enablebanking.com](mailto:hello@enablebanking.com)
+if you want to use it.
