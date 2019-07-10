@@ -11,23 +11,11 @@ const aktiaSettings = [
   "https://enablebanking.com/consent-redirect-callback" // tppRedirectUri
 ];
 const apiClient = new enablebanking.ApiClient('Aktia', aktiaSettings);
-const authApi = new enablebanking.AuthApi(apiClient);
 const aispApi = new enablebanking.AISPApi(apiClient);
 
 async function main() {
-  const auth = await authApi.getAuth(
-    "code",
-    "https://enablebanking.com/auth-redirect-callback",
-    ["aisp"],
-    { state: "test" }
-  );
-  console.log("Authentication URL:", auth.url);
-  const token = await authApi.makeToken(
-    "authorization_code",
-    "sandbox"
-  );
-  console.log("Bearer access token:", token.access_token);
-  // Consent creation is omitted as consent ID is passed API client constructor
+  // Authentication and consent creation are omitted as consent ID is passed to the
+  // API client constructor.
   console.log("Retrieving list of accounts...");
   const halAccounts = await aispApi.getAccounts();
   console.log("Accounts info:", halAccounts);
