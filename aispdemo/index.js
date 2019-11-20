@@ -1,44 +1,66 @@
 'use strict';
 
 const enablebanking = require('enablebanking');
+const fetch = require('node-fetch');
 
-const aktiaSettings = [
+/**
+ * Bank connector specific settings
+ */
+const nordeaSettings = [
   true, // sandbox
+  null, // consentId
+  null, // accessToken
+  null, // refreshToken
   "!!! CLIENT ID TO BE INSERTED HERE !!!", // clientId
   "!!! CLIENT SECRET TO BE INSERTED HERE !!!", // clientSecret
-  null, // accessToken
-  "12345-1232-123", // consentId
+  "/path/to/a/qwac/cert.cer", // certPath
+  "/path/to/a/qseal/signature/key.pem", // keyPath
+  "FI", // country
+  1000, // sessionDuration
+  null, // language
   "https://enablebanking.com/consent-redirect-callback" // tppRedirectUri
 ];
-const apiClient = new enablebanking.ApiClient('Aktia', aktiaSettings);
-const aispApi = new enablebanking.AISPApi(apiClient);
 
-async function main() {
-  // Authentication and consent creation are omitted as consent ID is passed to the
-  // API client constructor.
-  console.log("Retrieving list of accounts...");
-  const halAccounts = await aispApi.getAccounts();
-  console.log("Accounts info:", halAccounts);
-  for (let account of halAccounts.accounts) {
-    console.log("Retrieving account balances...");
-    let halBalances = await aispApi.getAccountBalances(account.resourceId);
-    console.log("Balances info:", halBalances);
-    console.log("Retrieving account transactions...");
-    let halTransactions = await aispApi.getAccountTransactions(account.resourceId);
-    console.log("Transactions:");
-    for (let transaction of halTransactions.transactions) {
-      console.log(
-        "- Status:",
-        transaction.status);
-      console.log(
-        "  Credit/debit:",
-        transaction.creditDebitIndicator);
-      console.log(
-        "  Amount:",
-        transaction.transactionAmount.amount,
-        transaction.transactionAmount.currency);
+function getResponseCode(url) {
+  var qs = url.split('?')[1];
+  var pairs = qs.split('&');
+  for (var i = 0; i < pairs.length; i++) {
+    var key_value = pairs[i].split('=');
+    if (key_value[0] === 'code') {
+      return key_value[1];
     }
   }
+};
+
+async function main() {
+  const apiClient = new enablebanking.ApiClient('Nordea', nordeaSettings);
+  const authApi = new enablebanking.AuthApi(apiClient);
+  const getAuthResult = await authApi.getAuth(
+    'code',
+    'https://enablebanking.com',
+    ['aisp'],
+    {
+      state: 'test'
+    }
+  );
+  // follow the url to make user authorization
+  // usually you need to do a few clicks in the UI
+  const authResult = await fetch(getAuthResult.url);
+  const responseCode = getResponseCode(authResult.url);
+  // token is returned and also saved inside `apiClient`
+  const makeTokenResponse = await authApi.makeToken(
+    'authorization_code',
+    responseCode,
+    {
+      redirectUri: 'https://enablebanking.com'
+    }
+  );
+  const aispApi = new enablebanking.AISPApi(apiClient);
+  const accounts = await aispApi.getAccounts();
+  console.log(accounts);
+  const accountId = accounts.accounts[0].resourceId;
+  const accountTransactions = await aispApi.getAccountTransactions(accountId);
+  console.log(accountTransactions)
 };
 
 main().then(function() {

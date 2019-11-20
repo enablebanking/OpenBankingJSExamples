@@ -22,6 +22,9 @@ async function readLine() {
  */
 const spankkiSettings = [
   true, // sandbox
+  null, // consentId
+  null, // accessToken
+  null, // refreshToken
   "!!! CLIENT ID TO BE INSERTED HERE !!!", // clientId
   "!!! X API KEY TO BE INSERTED HERE !!!", // xApiKey
   "wac.crt", // certPath (path to QWAC certificate)
@@ -29,10 +32,7 @@ const spankkiSettings = [
   "seal.key", // signKeyPath (path to Qseal private key)
   "!!! QSEAL KID TO BE INSERTED HERE !!!", // signPubKeySerial (Qseal kid)
   "https://enablebanking.com/", // paymentAuthRedirectUri
-  null, // paymentAuthState
-  null, // accessToken
-  null, // refreshToken
-  null // consentId
+  null // paymentAuthState
 ];
 
 const apiClient = new enablebanking.ApiClient('SPankki', spankkiSettings);
