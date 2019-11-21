@@ -12,9 +12,9 @@ transferring money from one account to the other own account (payment confirmati
 
 # AISP demo
 
-The code uses `Aktia` connector and gets access to [Aktia](https://www.aktia.fi/)'s open banking sandbox. In order to run
+The code uses `Nordea` connector and gets access to [Nordea](https://www.nordea.fi/)'s open banking sandbox. In order to run
 the demo you need to use own credentials, which can be obtained after signing up to
-[Aktia's Developer Portal](https://developer.aktia.fi/).
+[Nordea's Developer Portal](https://developer.nordeaopenbanking.com/).
 
 # PISP demo
 
