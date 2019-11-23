@@ -1,24 +1,24 @@
 'use strict';
 
 const enablebanking = require('enablebanking');
-const fetch = require('node-fetch');
 
 /**
  * Bank connector specific settings
  */
-const nordeaSettings = [
+const kirSettings = [
   true, // sandbox
   null, // consentId
   null, // accessToken
   null, // refreshToken
-  "!!! CLIENT ID TO BE INSERTED HERE !!!", // clientId
-  "!!! CLIENT SECRET TO BE INSERTED HERE !!!", // clientSecret
-  "/path/to/a/qwac/cert.cer", // certPath
-  "/path/to/a/qseal/signature/key.pem", // keyPath
-  "FI", // country
-  1000, // sessionDuration
-  null, // language
-  "https://enablebanking.com/consent-redirect-callback" // tppRedirectUri
+  "PSDPL-KNF-1234567890", // clientId
+  "assets/KIR/qwac.crt", // certPath
+  "assets/KIR/key.key", // keyPath
+  "assets/KIR/key.key", // signKeyPath
+  "667fc34ec1f04c8f80827ad5f87cffa675b0ad94", // signSubjectKeyIdentifier
+  "1s4POi24Ou0Ew4pLCxvYSd5U62Gz7pGhcwbyXKYhZig", // signFingerprint
+  "https://enablebanking.com/eb-kir-qseal.crt", // signCertUrl
+  "https://enablebanking.com/", // paymentAuthRedirectUri
+  null // paymentAuthState
 ];
 
 function getResponseCode(url) {
@@ -33,7 +33,7 @@ function getResponseCode(url) {
 };
 
 async function main() {
-  const apiClient = new enablebanking.ApiClient('Nordea', nordeaSettings);
+  const apiClient = new enablebanking.ApiClient('KIR', kirSettings);
   const authApi = new enablebanking.AuthApi(apiClient);
   const getAuthResult = await authApi.getAuth(
     'code',
@@ -43,10 +43,9 @@ async function main() {
       state: 'test'
     }
   );
-  // follow the url to make user authorization
-  // usually you need to do a few clicks in the UI
-  const authResult = await fetch(getAuthResult.url);
-  const responseCode = getResponseCode(authResult.url);
+  console.log("Open the URL to make authorization: " + getAuthResult.url);
+  const authResultUrl = "redirected url here?code=xxxxxx";
+  const responseCode = getResponseCode(authResultUrl);
   // token is returned and also saved inside `apiClient`
   const makeTokenResponse = await authApi.makeToken(
     'authorization_code',
