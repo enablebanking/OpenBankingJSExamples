@@ -24,7 +24,6 @@ const spankkiSettings = [
   true, // sandbox
   null, // consentId
   null, // accessToken
-  null, // refreshToken
   "!!! CLIENT ID TO BE INSERTED HERE !!!", // clientId
   "!!! X API KEY TO BE INSERTED HERE !!!", // xApiKey
   "wac.crt", // certPath (path to QWAC certificate)
@@ -32,6 +31,7 @@ const spankkiSettings = [
   "seal.key", // signKeyPath (path to Qseal private key)
   "!!! QSEAL KID TO BE INSERTED HERE !!!", // signPubKeySerial (Qseal kid)
   "https://enablebanking.com/", // paymentAuthRedirectUri
+  "https://enablebanking.com/", // redirectUri
   null // paymentAuthState
 ];
 
@@ -42,9 +42,6 @@ const pispApi = new enablebanking.PISPApi(apiClient);
 
 async function main() {
   const auth = await authApi.getAuth(
-    "code",
-    "https://enablebanking.com/",
-    ["aisp"],
     { state: "test" }
   );
   console.log("Authentication URL:", auth.url);
@@ -53,8 +50,7 @@ async function main() {
   const redirectURL = url.parse(redirect.replace("#", "?") /* because code in hash */, true);
   const token = await authApi.makeToken(
     "authorization_code",
-    redirectURL.query.code,
-    { redirectUri: 'https://enablebanking.com/' }
+    redirectURL.query.code
   );
   console.log("Bearer access token:", token.access_token);
 

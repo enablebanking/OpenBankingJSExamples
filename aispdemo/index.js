@@ -10,7 +10,6 @@ const nordeaSettings = [
   true, // sandbox
   null, // consentId
   null, // accessToken
-  null, // refreshToken
   "!!! CLIENT ID TO BE INSERTED HERE !!!", // clientId
   "!!! CLIENT SECRET TO BE INSERTED HERE !!!", // clientSecret
   "/path/to/a/qwac/cert.cer", // certPath
@@ -18,7 +17,7 @@ const nordeaSettings = [
   "FI", // country
   1000, // sessionDuration
   null, // language
-  "https://enablebanking.com/consent-redirect-callback" // tppRedirectUri
+  "https://enablebanking.com/" // redirectUri
 ];
 
 function getResponseCode(url) {
@@ -36,9 +35,6 @@ async function main() {
   const apiClient = new enablebanking.ApiClient('Nordea', nordeaSettings);
   const authApi = new enablebanking.AuthApi(apiClient);
   const getAuthResult = await authApi.getAuth(
-    'code',
-    'https://enablebanking.com',
-    ['aisp'],
     {
       state: 'test'
     }
@@ -50,10 +46,7 @@ async function main() {
   // token is returned and also saved inside `apiClient`
   const makeTokenResponse = await authApi.makeToken(
     'authorization_code',
-    responseCode,
-    {
-      redirectUri: 'https://enablebanking.com'
-    }
+    responseCode
   );
   const aispApi = new enablebanking.AISPApi(apiClient);
   const accounts = await aispApi.getAccounts();
