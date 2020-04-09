@@ -10,26 +10,14 @@ const nordeaSettings = [
   true, // sandbox
   null, // consentId
   null, // accessToken
-  "https://example.com/",  // redirectUri
+  "https://enablebanking.com/auth_redirect",  // redirectUri
   "FI", // country
   "!!! CLIENT ID TO BE INSERTED HERE !!!", // clientId
   "!!! CLIENT SECRET TO BE INSERTED HERE !!!", // clientSecret
   "path/to/signature/key.pem", // signKeyPath
   1000, // sessionDuration
   null, // language
-  "https://enablebanking.com/" // redirectUri
 ];
-
-function getResponseCode(url) {
-  var qs = url.split('?')[1];
-  var pairs = qs.split('&');
-  for (var i = 0; i < pairs.length; i++) {
-    var key_value = pairs[i].split('=');
-    if (key_value[0] === 'code') {
-      return key_value[1];
-    }
-  }
-};
 
 async function main() {
   const apiClient = new enablebanking.ApiClient('Nordea', nordeaSettings);
@@ -53,9 +41,13 @@ async function main() {
   console.log(accounts);
   const accountId = accounts.accounts[0].resourceId;
   const accountTransactions = await aispApi.getAccountTransactions(accountId);
-  console.log(accountTransactions)
+  console.log(accountTransactions);
 };
 
 main().then(function() {
   console.log("All done!");
+  process.exit(0);
+}).catch(function(e) {
+  console.error(e);
+  process.exit(1);
 });
