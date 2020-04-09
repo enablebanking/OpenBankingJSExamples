@@ -10,11 +10,11 @@ const nordeaSettings = [
   true, // sandbox
   null, // consentId
   null, // accessToken
+  "https://example.com/",  // redirectUri
+  "FI", // country
   "!!! CLIENT ID TO BE INSERTED HERE !!!", // clientId
   "!!! CLIENT SECRET TO BE INSERTED HERE !!!", // clientSecret
-  "/path/to/a/qwac/cert.cer", // certPath
-  "/path/to/a/qseal/signature/key.pem", // keyPath
-  "FI", // country
+  "path/to/signature/key.pem", // signKeyPath
   1000, // sessionDuration
   null, // language
   "https://enablebanking.com/" // redirectUri
@@ -42,7 +42,7 @@ async function main() {
   // follow the url to make user authorization
   // usually you need to do a few clicks in the UI
   const authResult = await fetch(getAuthResult.url);
-  const responseCode = getResponseCode(authResult.url);
+  const responseCode = (await authApi.parseRedirectUrl(authResult.url)).code;
   // token is returned and also saved inside `apiClient`
   const makeTokenResponse = await authApi.makeToken(
     'authorization_code',
