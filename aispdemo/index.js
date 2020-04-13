@@ -4,20 +4,6 @@ const enablebanking = require('enablebanking');
 const readline = require('readline');
 
 /**
- * Helper function for reading a single line from stdin
- */
-async function readLine(msg) {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  console.log(msg);
-  for await (const line of rl) {
-    return line;
-  }
-}
-
-/**
  * Bank connector specific settings
  */
 const settings = {
@@ -44,6 +30,20 @@ const settings = {
   }
   // More settings to be put here
 };
+
+/**
+ * Helper function for reading a single line from stdin
+ */
+async function readLine(msg) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  console.log(msg);
+  for await (const line of rl) {
+    return line;
+  }
+}
 
 /**
  * Bank connector specific settings
