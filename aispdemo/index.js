@@ -178,6 +178,7 @@ async function main() {
     const modifyConsentsResultForAccount = await aispApi.modifyConsents({
       access: new enablebanking.Access({
         accounts: [account.accountId],
+        transactions: new enablebanking.TransactionsAccess(),
         validUntil: accessValidUntil
       })
     });
