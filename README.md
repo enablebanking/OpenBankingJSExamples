@@ -5,16 +5,17 @@ Sample JavaScript code showing how to use Open banking APIs (PSD2 AISP &amp; PIS
 
 This repository contains 2 independent code samples:
 
-- [aispdemo](/aispdemo) - retrieving account information (list of accounts, accounts' balances and transactions) using
-existing consent ID
+- [aispdemo](/aispdemo) - retrieving account information (user authentication & consent for account information -> list of
+accounts -> list of transactions)
 - [pispdemo](/pispdemo) - authenticating user and getting account information consent, retrieving list of account and
 transferring money from one account to the other own account (payment confirmation is done using bank's web UI)
 
 # AISP demo
 
-The code uses `Nordea` connector and gets access to [Nordea](https://www.nordea.fi/)'s open banking sandbox. In order to run
-the demo you need to use own credentials, which can be obtained after signing up to
-[Nordea's Developer Portal](https://developer.nordeaopenbanking.com/).
+The code contains sample settings for [Nordea](https://enablebanking.com/docs/sdk/latest/#nordeaconnectorsettings-type) and
+[Swedbank](https://enablebanking.com/docs/sdk/latest/#swedbankconnectorsettings-type) sandbox connectors, but can be used with
+the other connectors as well. In order to run the sample code you need to obtain own sandbox credentials; for the instructions
+please refer to the [connectors documentation](https://enablebanking.com/docs/sdk/latest/#connectors-types).
 
 # PISP demo
 
