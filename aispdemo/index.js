@@ -15,7 +15,7 @@ const settings = {
     country: null, // to be set when country is chosen
     clientId: '!!! CLIENT ID TO BE INSERTED HERE !!!',
     clientSecret: '!!! CLIENT SECRET TO BE INSERTED HERE !!!',
-    clientSecret: 'path/to/signature/key.pem',
+    signKeyPath: 'path/to/signature/key.pem',
     sessionDuration: 1000,
     language: null
   },
