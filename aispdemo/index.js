@@ -7,7 +7,7 @@ const readline = require('readline');
  * Bank connector specific settings
  */
 const settings = {
-  'Nordea': {
+  'Nordea': enablebanking.NordeaConnectorSettings.constructFromObject({
     sandbox: true,
     consentId: null,
     accessToken: null,
@@ -18,8 +18,8 @@ const settings = {
     signKeyPath: 'path/to/signature/key.pem',
     sessionDuration: 1000,
     language: null
-  },
-  'Swedbank': {
+  }),
+  'Swedbank': enablebanking.SwedbankConnectorSettings.constructFromObject({
     sandbox: true,
     consentId: null,
     accessToken: null,
@@ -27,7 +27,7 @@ const settings = {
     country: null, // to be set when country is chosen
     clientId: '!!! CLIENT ID TO BE INSERTED HERE !!!',
     clientSecret: '!!! CLIENT SECRET TO BE INSERTED HERE !!!'
-  }
+  })
   // More settings to be put here
 };
 
@@ -84,7 +84,7 @@ async function main() {
   // Initializing ApiClient for the chosen bank
   const apiClient = new enablebanking.ApiClient(
     connector.name,
-    // passing only values (this is why the order matters for the settings)
+    // passing only values (so the order of the props matters and that's why constructFromObject is used)
     Object.values(connectorSettings));
   // Initializing authentication interface
   const authApi = new enablebanking.AuthApi(apiClient);
