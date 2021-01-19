@@ -71,9 +71,16 @@ async function main() {
   }
   await authApi.setClientInfo({ clientInfo: clientInfo })
 
+  const validUntil = new Date()
+  const days = 89
+  validUntil.setDate(validUntil.getDate() + days)
+  const access = new enablebanking.Access({
+    validUntil: validUntil
+  });
+
   const getAuthParams = { state: "test" }
   if (apiMeta.authInfo[0].info.access) {
-    getAuthParams.access = new enablebanking.Access()
+    getAuthParams.access = access
   }
   if (apiMeta.authInfo[0].info.userIdRequired) {
     getAuthParams.userId = "someId"
@@ -107,9 +114,12 @@ async function main() {
         )
         break
       } catch (err) {
-        console.log(`Failed to get authorization code, sleeping for ${sleepTime} seconds`)
-        console.log(err)
-        await sleep(sleepTime)
+        if (err instanceof enablebanking.errors.MakeTokenError) {
+          console.log(`Failed to get authorization code, sleeping for ${sleepTime} seconds`)
+          console.log(err)
+          await sleep(sleepTime)
+        }
+        throw err
       }
     }
   }
@@ -118,14 +128,7 @@ async function main() {
 
   // apiClient has already accessToken and refreshTOken applied after call to makeToken()
   const aispApi = new enablebanking.AISPApi(apiClient)
-
-  const validUntil = new Date()
-  const days = 89
-  validUntil.setDate(validUntil.getDate() + days)
   if (apiMeta.modifyConsentsInfo[0].info.beforeAccounts) {
-    const access = new enablebanking.Access({
-      validUntil: validUntil
-    });
     const consent = await aispApi.modifyConsents({ access: access })
     console.log(`Consent: ${consent}`);
     try {
@@ -138,12 +141,9 @@ async function main() {
   const accounts = await aispApi.getAccounts();
   console.log(accounts);
 
-  if (apiMeta.modifyConsentsInfo[0].info.beforeAccounts) {
+  if (apiMeta.modifyConsentsInfo[0].info.accountsRequired) {
     const accountIds = getAccountsResult.accounts.map((el) => new enablebanking.AccountIdentification({ iban: el.accountId.iban }));
-    const access = new enablebanking.Access({
-      accounts: accountIds,
-      validUntil: validUntil
-    });
+    access.accounts = accountIds;
     const consent = await aispApi.modifyConsents({ access: access })
     console.log(`Consent: ${consent}`);
     try {
