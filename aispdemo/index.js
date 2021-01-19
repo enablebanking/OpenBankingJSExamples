@@ -88,7 +88,7 @@ async function main() {
   if (apiMeta.authInfo[0].info.passwordRequired) {
     getAuthParams.password = "somePassword"
   }
-  const authResponse = await authApi.getAuth(getAuthParams);
+  const authResponse = await authApi.getAuth(getAuthParams)
 
   let makeTokenResponse
   if (authResponse.url) {
@@ -105,7 +105,7 @@ async function main() {
     // decoupled flow
     // Doing a retry to check periodically whether user has already authorized a consent
     const sleepTime = 3
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 10; i++) {
       try {
         makeTokenResponse = await authApi.makeToken(
           "authorization_code",
@@ -115,10 +115,13 @@ async function main() {
         break
       } catch (err) {
         if (err instanceof enablebanking.errors.MakeTokenError) {
-          console.log(`Failed to get authorization code, sleeping for ${sleepTime} seconds`)
-          console.log(err)
-          await sleep(sleepTime)
+          if (err.retry) {
+            console.log(`Not ready, retrying in ${sleepTime} seconds`)
+            await sleep(sleepTime)
+            continue
+          }
         }
+        console.error(err)
         throw err
       }
     }
@@ -135,7 +138,10 @@ async function main() {
       const consentUrl = consent._links.redirect.href;
       const redirectUrl = await readRedirectUrl(consentUrl, REDIRECT_URL)
       console.log(`Redirect url: ${redirectUrl}`);
-    } catch (error) { }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
 
   const accounts = await aispApi.getAccounts();
@@ -150,7 +156,10 @@ async function main() {
       const consentUrl = consent._links.redirect.href;
       const redirectUrl = await readRedirectUrl(consentUrl, REDIRECT_URL)
       console.log(`Redirect url: ${redirectUrl}`);
-    } catch (error) { }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
   for (const account of accounts.accounts) {
     let transactions = await aispApi.getAccountTransactions(account.resourceId)
@@ -161,5 +170,5 @@ async function main() {
 };
 
 main().then(function () {
-  console.log("All done!");
+  console.log("All done!")
 });
