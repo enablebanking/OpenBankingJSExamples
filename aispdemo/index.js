@@ -88,6 +88,13 @@ async function main() {
   if (apiMeta.authInfo[0].info.passwordRequired) {
     getAuthParams.password = "somePassword"
   }
+  if (apiMeta.authInfo[0].info.credentials) {
+    const credentials = [];
+    for (const cred of apiMeta.authInfo[0].info.credentials) {
+      credentials.push("") // obtain data in `cred` and push appropriate credential
+    }
+    getAuthParams.credentials = credentials;
+  }
   const authResponse = await authApi.getAuth(getAuthParams)
 
   let makeTokenResponse
