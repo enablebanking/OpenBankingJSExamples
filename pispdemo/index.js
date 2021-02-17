@@ -20,20 +20,20 @@ async function readLine() {
 /**
  * Bank connector specific settings
  */
-const spankkiSettings = [
-  true, // sandbox
-  null, // consentId
-  null, // accessToken
-  "!!! CLIENT ID TO BE INSERTED HERE !!!", // clientId
-  "!!! X API KEY TO BE INSERTED HERE !!!", // xApiKey
-  "wac.crt", // certPath (path to QWAC certificate)
-  "wac.key", // keyPath (path to QWAC private key)
-  "seal.key", // signKeyPath (path to Qseal private key)
-  "!!! QSEAL KID TO BE INSERTED HERE !!!", // signPubKeySerial (Qseal kid)
-  "https://enablebanking.com/", // paymentAuthRedirectUri
-  "https://enablebanking.com/", // redirectUri
-  null // paymentAuthState
-];
+const spankkiSettings = {
+  sandbox: true,
+  consentId: null,
+  accessToken: null,
+  clientId: "!!! CLIENT ID TO BE INSERTED HERE !!!",
+  xApiKey: "!!! X API KEY TO BE INSERTED HERE !!!",
+  certPath: "wac.crt", // path to QWAC certificate
+  keyPath: "wac.key", // path to QWAC private key
+  signKeyPath: "seal.key", // path to Qseal private key
+  signPubKeySerial: "!!! QSEAL KID TO BE INSERTED HERE !!!", // Qseal kid
+  paymentAuthRedirectUri: "https://enablebanking.com/",
+  redirectUri: "https://enablebanking.com/",
+  paymentAuthState: null
+};
 
 const apiClient = new enablebanking.ApiClient('SPankki', spankkiSettings);
 const authApi = new enablebanking.AuthApi(apiClient);
