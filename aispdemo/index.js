@@ -16,13 +16,10 @@ const CONNECTOR_SETTINGS = {
   accessToken: null,
   redirectUri: REDIRECT_URL,
   country: CONNECTOR_COUNTRY,
-  business: null,
   clientId: "client_id",  // API Client ID
   clientSecret: "client_secret",  // API Client Secret
   signKeyPath: "/path/to/private.key",  // Path or URI to QSeal private key in PEM format
-  language: null,
-  paymentAuthRedirectUri: REDIRECT_URL,
-  paymentAuthState: "test",
+  language: null
 }
 
 const readRedirectUrl = async (url, redirectUrl) => {
